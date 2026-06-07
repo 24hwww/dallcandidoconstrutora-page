@@ -235,7 +235,7 @@ function Index() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {gallery.map((g) => (
+            {galleryItems.map((g) => (
               <div key={g.label} className="group relative overflow-hidden rounded-xl border border-border aspect-[4/3]">
                 <img
                   src={g.src}
