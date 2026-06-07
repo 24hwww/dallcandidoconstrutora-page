@@ -237,8 +237,13 @@ function Index() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {galleryItems.map((g) => (
-              <div key={g.label} className="group relative overflow-hidden rounded-xl border border-border aspect-[4/3]">
+            {galleryItems.slice(0, 9).map((g, i) => (
+              <button
+                type="button"
+                key={`${g.label}-${i}`}
+                onClick={() => setLightboxIndex(i)}
+                className="group relative overflow-hidden rounded-xl border border-border aspect-[4/3] text-left"
+              >
                 <img
                   src={g.src}
                   alt={g.label}
@@ -252,11 +257,24 @@ function Index() {
                   <p className="text-xs text-primary font-semibold tracking-widest uppercase mb-1">Projeto</p>
                   <h3 className="text-xl font-semibold">{g.label}</h3>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
+          {galleryItems.length > 9 && (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setLightboxIndex(0)}
+                className="px-7 py-3.5 rounded-md font-semibold text-primary-foreground transition hover:scale-[1.02]"
+                style={{ background: "var(--gradient-red)", boxShadow: "var(--shadow-red)" }}
+              >
+                Ver todas as {galleryItems.length} obras
+              </button>
+            </div>
+          )}
         </div>
       </section>
+
 
       {/* SOBRE */}
       <section id="sobre" className="py-24 px-6">
