@@ -113,10 +113,19 @@ type DriveItem = {
 };
 
 async function fetchGallery(): Promise<DriveItem[]> {
-  const res = await fetch(GALLERY_ENDPOINT);
-  if (!res.ok) throw new Error("Falha ao carregar galeria");
-  const json = await res.json();
-  return (json.items || []).filter((i: DriveItem) => i.type === "image");
+  try {
+    const res = await fetch(GALLERY_ENDPOINT, {
+      method: "GET",
+      redirect: "follow",
+    });
+    if (!res.ok) throw new Error(`Falha ao carregar galeria: ${res.status}`);
+    const json = await res.json();
+    console.log("Imagens do Google Drive carregadas com sucesso:", json);
+    return (json.items || []).filter((i: DriveItem) => i.type === "image");
+  } catch (error) {
+    console.error("Erro na requisição da galeria do Google Drive:", error);
+    throw error;
+  }
 }
 
 function prettyLabel(name: string) {
@@ -140,8 +149,15 @@ function Index() {
 
   const galleryItems =
     driveImages && driveImages.length > 0
-      ? driveImages.map((i) => ({ src: i.thumbnail_url.replace(/sz=w\d+/, "sz=w1600"), label: prettyLabel(i.name) }))
-      : gallery;
+      ? driveImages.map((i) => ({
+          src: `https://lh3.googleusercontent.com/d/${i.id}=w1600`,
+          thumb: `https://lh3.googleusercontent.com/d/${i.id}=w600`,
+          label: prettyLabel(i.name),
+        }))
+      : gallery.map((g) => ({
+          ...g,
+          thumb: g.src,
+        }));
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -311,7 +327,7 @@ function Index() {
                 className="group relative overflow-hidden rounded-xl border border-border aspect-[4/3] text-left"
               >
                 <img
-                  src={g.src}
+                  src={g.thumb || g.src}
                   alt={`${g.label} — Dall' Candido Construtora Forquilhinha SC`}
                   loading="lazy"
                   width={1200}
