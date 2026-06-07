@@ -410,7 +410,51 @@ function Index() {
           </p>
         </div>
       </footer>
+
+      {/* LIGHTBOX */}
+      {lightboxIndex !== null && galleryItems[lightboxIndex] && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center"
+          onClick={closeLightbox}
+        >
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); closeLightbox(); }}
+            className="absolute top-5 right-5 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+            aria-label="Fechar"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); prev(); }}
+            className="absolute left-3 md:left-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+            aria-label="Anterior"
+          >
+            <ChevronLeft className="w-7 h-7" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); next(); }}
+            className="absolute right-3 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+            aria-label="Próxima"
+          >
+            <ChevronRight className="w-7 h-7" />
+          </button>
+          <div className="max-w-[92vw] max-h-[88vh] flex flex-col items-center gap-4" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={galleryItems[lightboxIndex].src}
+              alt={galleryItems[lightboxIndex].label}
+              className="max-w-[92vw] max-h-[80vh] object-contain rounded-lg shadow-2xl"
+            />
+            <p className="text-white/80 text-sm">
+              {lightboxIndex + 1} / {galleryItems.length} — {galleryItems[lightboxIndex].label}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 }
 
