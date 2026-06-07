@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState, useCallback } from "react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import logo from "@/assets/logo-dc.png.asset.json";
 import hero from "@/assets/hero-house.jpg";
 import wGourmet from "@/assets/work-gourmet.jpg";
@@ -101,11 +103,40 @@ function Index() {
 
   const galleryItems =
     driveImages && driveImages.length > 0
-      ? driveImages.map((i) => ({ src: i.thumbnail_url.replace(/sz=w\d+/, "sz=w1200"), label: prettyLabel(i.name) }))
+      ? driveImages.map((i) => ({ src: i.thumbnail_url.replace(/sz=w\d+/, "sz=w1600"), label: prettyLabel(i.name) }))
       : gallery;
+
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
+  const prev = useCallback(
+    () => setLightboxIndex((i) => (i === null ? null : (i - 1 + galleryItems.length) % galleryItems.length)),
+    [galleryItems.length],
+  );
+  const next = useCallback(
+    () => setLightboxIndex((i) => (i === null ? null : (i + 1) % galleryItems.length)),
+    [galleryItems.length],
+  );
+
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") prev();
+      else if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [lightboxIndex, closeLightbox, prev, next]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+
       {/* NAV */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-border">
 
@@ -235,8 +266,13 @@ function Index() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {galleryItems.map((g) => (
-              <div key={g.label} className="group relative overflow-hidden rounded-xl border border-border aspect-[4/3]">
+            {galleryItems.slice(0, 9).map((g, i) => (
+              <button
+                type="button"
+                key={`${g.label}-${i}`}
+                onClick={() => setLightboxIndex(i)}
+                className="group relative overflow-hidden rounded-xl border border-border aspect-[4/3] text-left"
+              >
                 <img
                   src={g.src}
                   alt={g.label}
@@ -250,11 +286,24 @@ function Index() {
                   <p className="text-xs text-primary font-semibold tracking-widest uppercase mb-1">Projeto</p>
                   <h3 className="text-xl font-semibold">{g.label}</h3>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
+          {galleryItems.length > 9 && (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setLightboxIndex(0)}
+                className="px-7 py-3.5 rounded-md font-semibold text-primary-foreground transition hover:scale-[1.02]"
+                style={{ background: "var(--gradient-red)", boxShadow: "var(--shadow-red)" }}
+              >
+                Ver todas as {galleryItems.length} obras
+              </button>
+            </div>
+          )}
         </div>
       </section>
+
 
       {/* SOBRE */}
       <section id="sobre" className="py-24 px-6">
@@ -361,7 +410,51 @@ function Index() {
           </p>
         </div>
       </footer>
+
+      {/* LIGHTBOX */}
+      {lightboxIndex !== null && galleryItems[lightboxIndex] && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center"
+          onClick={closeLightbox}
+        >
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); closeLightbox(); }}
+            className="absolute top-5 right-5 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+            aria-label="Fechar"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); prev(); }}
+            className="absolute left-3 md:left-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+            aria-label="Anterior"
+          >
+            <ChevronLeft className="w-7 h-7" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); next(); }}
+            className="absolute right-3 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+            aria-label="Próxima"
+          >
+            <ChevronRight className="w-7 h-7" />
+          </button>
+          <div className="max-w-[92vw] max-h-[88vh] flex flex-col items-center gap-4" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={galleryItems[lightboxIndex].src}
+              alt={galleryItems[lightboxIndex].label}
+              className="max-w-[92vw] max-h-[80vh] object-contain rounded-lg shadow-2xl"
+            />
+            <p className="text-white/80 text-sm">
+              {lightboxIndex + 1} / {galleryItems.length} — {galleryItems[lightboxIndex].label}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 }
 
