@@ -1,0 +1,48 @@
+2026-06-07T20:16:04.163318Z	Cloning repository...
+2026-06-07T20:16:05.647626Z	From https://github.com/24hwww/construtora-sonho
+2026-06-07T20:16:05.647944Z	 * branch            e8bdc40d9f3d228acaeb77f92f2d9fd493acfc78 -> FETCH_HEAD
+2026-06-07T20:16:05.648027Z	
+2026-06-07T20:16:05.685557Z	HEAD is now at e8bdc40 Update website with Google branding and correct logo image
+2026-06-07T20:16:05.685881Z	
+2026-06-07T20:16:05.733236Z	
+2026-06-07T20:16:05.733569Z	Using v2 root directory strategy
+2026-06-07T20:16:05.747862Z	Success: Finished cloning repository files
+2026-06-07T20:16:08.539824Z	Checking for configuration in a Wrangler configuration file (BETA)
+2026-06-07T20:16:08.54052Z	
+2026-06-07T20:16:08.743452Z	No Wrangler configuration file found. Continuing.
+2026-06-07T20:16:08.909407Z	Detected the following tools from environment: npm@10.9.2, nodejs@22.16.0
+2026-06-07T20:16:08.910945Z	Installing project dependencies: npm install --progress=false
+2026-06-07T20:16:26.904879Z	npm error code ERESOLVE
+2026-06-07T20:16:26.905855Z	npm error ERESOLVE could not resolve
+2026-06-07T20:16:26.905961Z	npm error
+2026-06-07T20:16:26.906012Z	npm error While resolving: @lovable.dev/vite-tanstack-config@2.3.2
+2026-06-07T20:16:26.906061Z	npm error Found: nitro@3.0.260429-beta
+2026-06-07T20:16:26.906106Z	npm error node_modules/nitro
+2026-06-07T20:16:26.906156Z	npm error   dev nitro@"3.0.260429-beta" from the root project
+2026-06-07T20:16:26.906194Z	npm error
+2026-06-07T20:16:26.906229Z	npm error Could not resolve dependency:
+2026-06-07T20:16:26.906259Z	npm error peerOptional nitro@">=3.0.260603-beta" from @lovable.dev/vite-tanstack-config@2.3.2
+2026-06-07T20:16:26.906301Z	npm error node_modules/@lovable.dev/vite-tanstack-config
+2026-06-07T20:16:26.906336Z	npm error   dev @lovable.dev/vite-tanstack-config@"^2.1.1" from the root project
+2026-06-07T20:16:26.906372Z	npm error
+2026-06-07T20:16:26.906406Z	npm error Conflicting peer dependency: nitro@3.0.260603-beta
+2026-06-07T20:16:26.906439Z	npm error node_modules/nitro
+2026-06-07T20:16:26.906477Z	npm error   peerOptional nitro@">=3.0.260603-beta" from @lovable.dev/vite-tanstack-config@2.3.2
+2026-06-07T20:16:26.906514Z	npm error   node_modules/@lovable.dev/vite-tanstack-config
+2026-06-07T20:16:26.90655Z	npm error     dev @lovable.dev/vite-tanstack-config@"^2.1.1" from the root project
+2026-06-07T20:16:26.906585Z	npm error
+2026-06-07T20:16:26.906617Z	npm error Fix the upstream dependency conflict, or retry
+2026-06-07T20:16:26.906663Z	npm error this command with --force or --legacy-peer-deps
+2026-06-07T20:16:26.906718Z	npm error to accept an incorrect (and potentially broken) dependency resolution.
+2026-06-07T20:16:26.906782Z	npm error
+2026-06-07T20:16:26.906844Z	npm error
+2026-06-07T20:16:26.90688Z	npm error For a full report see:
+2026-06-07T20:16:26.906911Z	npm error /opt/buildhome/.npm/_logs/2026-06-07T20_16_09_429Z-eresolve-report.txt
+2026-06-07T20:16:26.906956Z	npm error A complete log of this run can be found in: /opt/buildhome/.npm/_logs/2026-06-07T20_16_09_429Z-debug-0.log
+2026-06-07T20:16:26.97663Z	Error: Exit with error code: 1
+2026-06-07T20:16:26.977097Z	    at ChildProcess.<anonymous> (/snapshot/dist/run-build.js)
+2026-06-07T20:16:26.977209Z	    at Object.onceWrapper (node:events:652:26)
+2026-06-07T20:16:26.977267Z	    at ChildProcess.emit (node:events:537:28)
+2026-06-07T20:16:26.977306Z	    at ChildProcess._handle.onexit (node:internal/child_process:291:12)
+2026-06-07T20:16:26.984006Z	Failed: build command exited with code: 1
+2026-06-07T20:16:27.73037Z	Failed: error occurred while running build command
