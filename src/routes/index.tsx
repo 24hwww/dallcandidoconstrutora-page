@@ -62,7 +62,7 @@ const gallery = [
   { src: wCommercial, label: "Obra Comercial" },
 ];
 
-const whatsappNumber = "5548999999999";
+const whatsappNumber = "554797090562";
 const whatsappMsg = encodeURIComponent("Olá! Gostaria de solicitar um orçamento.");
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`;
 
@@ -283,9 +283,9 @@ function Index() {
                 Conte-nos sobre seu projeto. Respondemos rápido e sem compromisso.
               </p>
               <div className="space-y-4">
-                <ContactRow icon={Phone} label="Telefone / WhatsApp" value="(48) 99999-9999" href={whatsappUrl} />
-                <ContactRow icon={Mail} label="E-mail" value="contato@dallcandido.com.br" href="mailto:contato@dallcandido.com.br" />
-                <ContactRow icon={MapPin} label="Localização" value="Forquilhinha — SC e região" />
+              <ContactRow icon={Phone} label="Telefone / WhatsApp" value="+55 47 9709-0562" href={whatsappUrl} />
+                <ContactRow icon={Mail} label="E-mail" value="dallcandidoconstrucoes@gmail.com" href="mailto:dallcandidoconstrucoes@gmail.com" />
+                <ContactRow icon={MapPin} label="Localização" value="Forquilhinha, SC, 88850-000, Brasil" />
               </div>
             </div>
             <div className="flex flex-col gap-4">
@@ -299,7 +299,7 @@ function Index() {
                 Falar no WhatsApp agora
               </a>
               <a
-                href="mailto:contato@dallcandido.com.br"
+                href="mailto:dallcandidoconstrucoes@gmail.com"
                 className="block p-6 rounded-2xl text-center font-semibold text-lg border border-border bg-card hover:bg-secondary transition"
               >
                 Enviar e-mail
