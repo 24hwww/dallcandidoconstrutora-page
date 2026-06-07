@@ -1,7 +1,4 @@
 name = "dallcandidoconstrutora-page"
 compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
-
-[assets]
-directory = ".output/public"
-binding = "ASSETS"
+pages_build_output_dir = ".output/public"
