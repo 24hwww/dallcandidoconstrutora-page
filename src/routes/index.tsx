@@ -39,21 +39,6 @@ function GoogleIcon({ className }: { className?: string }) {
 }
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Dall' Candido Construtora — Construção e Reformas em Forquilhinha SC" },
-      {
-        name: "description",
-        content:
-          "Construtora em Forquilhinha, SC. Especialistas em construção de casas, reformas residenciais e comerciais, cozinhas, áreas gourmet, sobrados, prédios e ampliações. Orçamento sem compromisso.",
-      },
-      { name: "keywords", content: "construtora Forquilhinha, construção de casas SC, reforma residencial Forquilhinha, área gourmet, sobrado, ampliação, construção civil Santa Catarina" },
-      { property: "og:title", content: "Dall' Candido Construtora — Forquilhinha SC" },
-      { property: "og:description", content: "Especialistas em construção de casas, reformas e obras em Forquilhinha e região. Qualidade e prazo garantidos." },
-      { property: "og:image", content: "/logo-square.png" },
-      { property: "og:url", content: "https://dallcandido.replit.app" },
-    ],
-  }),
   component: Index,
 });
 
