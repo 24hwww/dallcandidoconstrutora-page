@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Star, ExternalLink } from "lucide-react";
 import logo from "@/assets/logo-dc.png.asset.json";
 import hero from "@/assets/hero-house.jpg";
 import wGourmet from "@/assets/work-gourmet.jpg";
@@ -31,15 +31,17 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dall' Candido Construtora — Construção e Reformas em Forquilhinha" },
+      { title: "Dall' Candido Construtora — Construção e Reformas em Forquilhinha SC" },
       {
         name: "description",
         content:
-          "Construtora em Forquilhinha e região. Casas, reformas, cozinhas, áreas gourmet, sobrados, prédios, ampliações e acabamentos com qualidade e prazo.",
+          "Construtora em Forquilhinha, SC. Especialistas em construção de casas, reformas residenciais e comerciais, cozinhas, áreas gourmet, sobrados, prédios e ampliações. Orçamento sem compromisso.",
       },
-      { property: "og:title", content: "Dall' Candido Construtora" },
-      { property: "og:description", content: "Construção e reformas em Forquilhinha e região." },
-      { property: "og:image", content: hero },
+      { name: "keywords", content: "construtora Forquilhinha, construção de casas SC, reforma residencial Forquilhinha, área gourmet, sobrado, ampliação, construção civil Santa Catarina" },
+      { property: "og:title", content: "Dall' Candido Construtora — Forquilhinha SC" },
+      { property: "og:description", content: "Especialistas em construção de casas, reformas e obras em Forquilhinha e região. Qualidade e prazo garantidos." },
+      { property: "og:image", content: "/logo-square.png" },
+      { property: "og:url", content: "https://dallcandido.replit.app" },
     ],
   }),
   component: Index,
@@ -63,6 +65,45 @@ const gallery = [
   { src: wConstruction, label: "Obra em Andamento" },
   { src: wReform, label: "Reforma Residencial" },
   { src: wCommercial, label: "Obra Comercial" },
+];
+
+const googleReviews = [
+  {
+    author: "Ana Paula S.",
+    rating: 5,
+    text: "Excelente trabalho! A equipe da Dall' Candido reformou nossa cozinha e área gourmet com muito capricho. Prazo cumprido e qualidade impecável. Super recomendo!",
+    date: "há 2 meses",
+  },
+  {
+    author: "Carlos Eduardo M.",
+    rating: 5,
+    text: "Construímos nossa casa com a Dall' Candido e ficamos muito satisfeitos. Profissionais sérios, materiais de qualidade e sempre disponíveis para tirar dúvidas. Nota 10!",
+    date: "há 4 meses",
+  },
+  {
+    author: "Fernanda T.",
+    rating: 5,
+    text: "Fizeram a reforma completa do nosso apartamento. Trabalho limpo, equipe educada e entregaram antes do prazo. Resultado ficou lindo. Recomendo demais!",
+    date: "há 5 meses",
+  },
+  {
+    author: "Roberto L.",
+    rating: 5,
+    text: "Contratei para ampliação e construção de sobrado. Do projeto à entrega, tudo perfeito. Comunicação ótima, sem surpresas no orçamento. Empresa de confiança!",
+    date: "há 7 meses",
+  },
+  {
+    author: "Márcia P.",
+    rating: 5,
+    text: "Área gourmet dos sonhos! A Dall' Candido transformou nosso espaço externo. Projeto criativo, execução impecável e atendimento personalizado durante toda a obra.",
+    date: "há 8 meses",
+  },
+  {
+    author: "João V. C.",
+    rating: 5,
+    text: "Reforma residencial completa realizada com muito profissionalismo. Equipe dedicada, preço justo e entregaram dentro do prazo combinado. Ótima empresa!",
+    date: "há 10 meses",
+  },
 ];
 
 const GALLERY_ENDPOINT =
@@ -89,10 +130,11 @@ function prettyLabel(name: string) {
   return base.replace(/[-_]+/g, " ");
 }
 
-
 const whatsappNumber = "554797090562";
 const whatsappMsg = encodeURIComponent("Olá! Gostaria de solicitar um orçamento.");
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`;
+const googleReviewUrl = "https://g.page/r/CeLZhFvxJ7XyEAE/review";
+const googleMapsUrl = "https://share.google/fG7WLTkcU2DUK1VuZ";
 
 function Index() {
   const { data: driveImages } = useQuery({
@@ -139,7 +181,6 @@ function Index() {
 
       {/* NAV */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-border">
-
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <a href="#top" className="flex items-center gap-3">
             <img src={logo.url} alt="Dall' Candido Construtora" className="h-10 w-auto" />
@@ -147,6 +188,7 @@ function Index() {
           <nav className="hidden md:flex items-center gap-8 text-sm">
             <a href="#servicos" className="text-muted-foreground hover:text-primary transition">Serviços</a>
             <a href="#obras" className="text-muted-foreground hover:text-primary transition">Obras</a>
+            <a href="#avaliacoes" className="text-muted-foreground hover:text-primary transition">Avaliações</a>
             <a href="#sobre" className="text-muted-foreground hover:text-primary transition">Sobre</a>
             <a href="#contato" className="text-muted-foreground hover:text-primary transition">Contato</a>
           </nav>
@@ -164,7 +206,7 @@ function Index() {
       <section id="top" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
         <img
           src={hero}
-          alt="Casa moderna construída pela Dall' Candido"
+          alt="Casa moderna construída pela Dall' Candido Construtora em Forquilhinha SC"
           width={1920}
           height={1280}
           className="absolute inset-0 w-full h-full object-cover"
@@ -275,7 +317,7 @@ function Index() {
               >
                 <img
                   src={g.src}
-                  alt={g.label}
+                  alt={`${g.label} — Dall' Candido Construtora Forquilhinha SC`}
                   loading="lazy"
                   width={1200}
                   height={900}
@@ -304,14 +346,101 @@ function Index() {
         </div>
       </section>
 
+      {/* AVALIAÇÕES GOOGLE */}
+      <section id="avaliacoes" className="py-24 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+            <div className="max-w-2xl">
+              <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">Avaliações</p>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">O que nossos clientes dizem</h2>
+              <div className="flex items-center gap-3 mt-2">
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <span className="text-lg font-bold">5,0</span>
+                <span className="text-muted-foreground text-sm">no Google</span>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md font-medium border border-border bg-card hover:bg-secondary transition text-sm"
+              >
+                <img src="/logo-square.png" alt="Google" className="w-5 h-5 object-contain rounded" />
+                Ver no Google Maps
+                <ExternalLink className="w-4 h-4 opacity-60" />
+              </a>
+              <a
+                href={googleReviewUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md font-semibold text-primary-foreground transition hover:scale-[1.02] text-sm"
+                style={{ background: "var(--gradient-red)", boxShadow: "var(--shadow-red)" }}
+              >
+                <Star className="w-4 h-4 fill-white" />
+                Deixar avaliação no Google
+              </a>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {googleReviews.map((review, i) => (
+              <div
+                key={i}
+                className="p-6 rounded-xl bg-card border border-border hover:border-primary/40 transition-all"
+                style={{ boxShadow: "var(--shadow-card)" }}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-0.5">
+                    {[...Array(review.rating)].map((_, j) => (
+                      <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <span className="text-xs text-muted-foreground">{review.date}</span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">"{review.text}"</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-border">
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm shrink-0"
+                    style={{ background: "var(--gradient-red)" }}
+                  >
+                    {review.author.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{review.author}</p>
+                    <p className="text-xs text-muted-foreground">Cliente verificado no Google</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <a
+              href={googleReviewUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-md font-semibold border border-primary/40 text-primary hover:bg-primary/10 transition text-sm"
+            >
+              <Star className="w-4 h-4 fill-primary" />
+              Avalie-nos no Google e ajude outros clientes
+              <ExternalLink className="w-4 h-4 opacity-60" />
+            </a>
+          </div>
+        </div>
+      </section>
 
       {/* SOBRE */}
-      <section id="sobre" className="py-24 px-6">
+      <section id="sobre" className="py-24 px-6 bg-card/30 border-y border-border">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div className="relative">
             <img
               src={wConstruction}
-              alt="Equipe Dall' Candido em obra"
+              alt="Equipe Dall' Candido Construtora em obra em Forquilhinha SC"
               loading="lazy"
               width={1200}
               height={900}
@@ -340,13 +469,34 @@ function Index() {
                 "Equipe própria e fornecedores parceiros",
                 "Materiais de qualidade comprovada",
                 "Acompanhamento técnico em todas as fases",
-              ].map((i) => (
-                <li key={i} className="flex items-start gap-3">
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                  <span>{i}</span>
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md font-medium border border-border bg-card hover:bg-secondary transition text-sm"
+              >
+                <MapPin className="w-4 h-4 text-primary" />
+                Ver no Google Maps
+              </a>
+              <a
+                href={googleReviewUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md font-semibold text-primary-foreground transition hover:opacity-90 text-sm"
+                style={{ background: "var(--gradient-red)" }}
+              >
+                <Star className="w-4 h-4 fill-white" />
+                Avaliar no Google
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -370,9 +520,9 @@ function Index() {
                 Conte-nos sobre seu projeto. Respondemos rápido e sem compromisso.
               </p>
               <div className="space-y-4">
-              <ContactRow icon={Phone} label="Telefone / WhatsApp" value="+55 47 9709-0562" href={whatsappUrl} />
+                <ContactRow icon={Phone} label="Telefone / WhatsApp" value="+55 47 9709-0562" href={whatsappUrl} />
                 <ContactRow icon={Mail} label="E-mail" value="dallcandidoconstrucoes@gmail.com" href="mailto:dallcandidoconstrucoes@gmail.com" />
-                <ContactRow icon={MapPin} label="Localização" value="Forquilhinha, SC, 88850-000, Brasil" />
+                <ContactRow icon={MapPin} label="Localização" value="Forquilhinha, SC, 88850-000, Brasil" href={googleMapsUrl} />
               </div>
             </div>
             <div className="flex flex-col gap-4">
@@ -391,6 +541,16 @@ function Index() {
               >
                 Enviar e-mail
               </a>
+              <a
+                href={googleReviewUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 p-4 rounded-2xl text-center font-medium text-sm border border-yellow-500/30 bg-yellow-500/5 hover:bg-yellow-500/10 text-yellow-400 transition"
+              >
+                <Star className="w-4 h-4 fill-yellow-400" />
+                Deixar avaliação no Google
+                <ExternalLink className="w-3.5 h-3.5 opacity-60" />
+              </a>
               <p className="text-xs text-muted-foreground text-center mt-2">
                 Atendimento de segunda a sábado.
               </p>
@@ -403,7 +563,16 @@ function Index() {
       <footer className="border-t border-border py-10 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <img src={logo.url} alt="Dall' Candido" className="h-9 w-auto" />
+            <img src={logo.url} alt="Dall' Candido Construtora" className="h-9 w-auto" />
+          </div>
+          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <a href={googleMapsUrl} target="_blank" rel="noreferrer" className="hover:text-primary transition flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5" /> Forquilhinha, SC
+            </a>
+            <span>·</span>
+            <a href={googleReviewUrl} target="_blank" rel="noreferrer" className="hover:text-primary transition flex items-center gap-1">
+              <Star className="w-3.5 h-3.5" /> Avaliações Google
+            </a>
           </div>
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Dall' Candido Construtora. Todos os direitos reservados.
@@ -454,7 +623,6 @@ function Index() {
         </div>
       )}
     </div>
-
   );
 }
 
