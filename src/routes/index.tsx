@@ -103,11 +103,40 @@ function Index() {
 
   const galleryItems =
     driveImages && driveImages.length > 0
-      ? driveImages.map((i) => ({ src: i.thumbnail_url.replace(/sz=w\d+/, "sz=w1200"), label: prettyLabel(i.name) }))
+      ? driveImages.map((i) => ({ src: i.thumbnail_url.replace(/sz=w\d+/, "sz=w1600"), label: prettyLabel(i.name) }))
       : gallery;
+
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
+  const prev = useCallback(
+    () => setLightboxIndex((i) => (i === null ? null : (i - 1 + galleryItems.length) % galleryItems.length)),
+    [galleryItems.length],
+  );
+  const next = useCallback(
+    () => setLightboxIndex((i) => (i === null ? null : (i + 1) % galleryItems.length)),
+    [galleryItems.length],
+  );
+
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") prev();
+      else if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [lightboxIndex, closeLightbox, prev, next]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+
       {/* NAV */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-border">
 
