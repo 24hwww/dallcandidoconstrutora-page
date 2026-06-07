@@ -93,10 +93,22 @@ const whatsappMsg = encodeURIComponent("Olá! Gostaria de solicitar um orçament
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`;
 
 function Index() {
+  const { data: driveImages } = useQuery({
+    queryKey: ["gallery"],
+    queryFn: fetchGallery,
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const galleryItems =
+    driveImages && driveImages.length > 0
+      ? driveImages.map((i) => ({ src: i.thumbnail_url.replace(/sz=w\d+/, "sz=w1200"), label: prettyLabel(i.name) }))
+      : gallery;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* NAV */}
-      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-border">
+
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <a href="#top" className="flex items-center gap-3">
             <img src={logo.url} alt="Dall' Candido Construtora" className="h-10 w-auto" />
