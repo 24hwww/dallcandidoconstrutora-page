@@ -12,45 +12,64 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
+const GA_ID = "G-6R3CVMLLNV";
+
 const structuredData = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "@id": "https://share.google/fG7WLTkcU2DUK1VuZ",
-  "name": "Dall' Candido Construtora",
-  "alternateName": "Dall Candido Construções",
-  "description": "Construtora especializada em construção de casas, reformas residenciais e comerciais, cozinhas, áreas gourmet, sobrados, prédios, ampliações e acabamentos em Forquilhinha e região.",
-  "telephone": "+554797090562",
-  "email": "dallcandidoconstrucoes@gmail.com",
-  "image": "/logo-square.png",
-  "logo": "/logo-square.png",
-  "address": {
+  name: "Dall' Candido Construtora",
+  alternateName: "Dall Candido Construções",
+  description:
+    "Construtora especializada em construção de casas, reformas residenciais e comerciais, cozinhas, áreas gourmet, sobrados, prédios, ampliações e acabamentos em Forquilhinha e região.",
+  telephone: "+554797090562",
+  email: "dallcandidoconstrucoes@gmail.com",
+  image: "/logo-square.png",
+  logo: "/logo-square.png",
+  address: {
     "@type": "PostalAddress",
-    "addressLocality": "Forquilhinha",
-    "addressRegion": "SC",
-    "postalCode": "88850-000",
-    "addressCountry": "BR",
+    addressLocality: "Forquilhinha",
+    addressRegion: "SC",
+    postalCode: "88850-000",
+    addressCountry: "BR",
   },
-  "geo": {
+  geo: {
     "@type": "GeoCoordinates",
-    "latitude": -28.7456,
-    "longitude": -49.4697,
+    latitude: -28.7456,
+    longitude: -49.4697,
   },
-  "areaServed": [
-    { "@type": "City", "name": "Forquilhinha" },
-    { "@type": "City", "name": "Criciúma" },
-    { "@type": "City", "name": "Içara" },
-    { "@type": "City", "name": "Morro da Fumaça" },
+  areaServed: [
+    { "@type": "City", name: "Forquilhinha" },
+    { "@type": "City", name: "Criciúma" },
+    { "@type": "City", name: "Içara" },
+    { "@type": "City", name: "Morro da Fumaça" },
   ],
-  "openingHoursSpecification": [
-    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "08:00", "closes": "18:00" },
-    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday"], "opens": "08:00", "closes": "12:00" },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "08:00",
+      closes: "18:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Saturday"],
+      opens: "08:00",
+      closes: "12:00",
+    },
   ],
-  "sameAs": [
+  sameAs: [
     "https://share.google/fG7WLTkcU2DUK1VuZ",
     "https://g.page/r/CeLZhFvxJ7XyEAE/review",
   ],
-  "priceRange": "$$",
+  priceRange: "$$",
 });
+
+declare global {
+  interface Window {
+    dataLayer: unknown[];
+    gtag: (...args: unknown[]) => void;
+  }
+}
 
 function NotFoundComponent() {
   return (
@@ -123,7 +142,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Construtora em Forquilhinha, SC. Especialistas em construção de casas, reformas residenciais e comerciais, cozinhas, áreas gourmet, sobrados, prédios e ampliações. Qualidade e prazo garantidos.",
       },
-      { name: "keywords", content: "construtora Forquilhinha, construção de casas Forquilhinha, reforma residencial SC, construtora Santa Catarina, área gourmet, sobrado, obra Criciúma, construção civil Forquilhinha" },
+      {
+        name: "keywords",
+        content:
+          "construtora Forquilhinha, construção de casas Forquilhinha, reforma residencial SC, construtora Santa Catarina, área gourmet, sobrado, obra Criciúma, construção civil Forquilhinha",
+      },
       { name: "author", content: "Dall' Candido Construtora" },
       { name: "robots", content: "index, follow" },
       { name: "language", content: "pt-BR" },
@@ -132,14 +155,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "geo.position", content: "-28.7456;-49.4697" },
       { name: "ICBM", content: "-28.7456, -49.4697" },
       { property: "og:title", content: "Dall' Candido Construtora — Forquilhinha SC" },
-      { property: "og:description", content: "Especialistas em construção de casas, reformas e obras em Forquilhinha e região. Qualidade, responsabilidade e prazo cumprido." },
+      {
+        property: "og:description",
+        content:
+          "Especialistas em construção de casas, reformas e obras em Forquilhinha e região. Qualidade, responsabilidade e prazo cumprido.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
       { property: "og:site_name", content: "Dall' Candido Construtora" },
       { property: "og:image", content: "/logo-square.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Dall' Candido Construtora — Forquilhinha SC" },
-      { name: "twitter:description", content: "Construção de casas, reformas e obras em Forquilhinha e região. Qualidade e prazo garantidos." },
+      {
+        name: "twitter:description",
+        content:
+          "Construção de casas, reformas e obras em Forquilhinha e região. Qualidade e prazo garantidos.",
+      },
       { name: "twitter:image", content: "/logo-square.png" },
       { name: "theme-color", content: "#cc0000" },
     ],
@@ -148,6 +179,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
       { rel: "canonical", href: "https://dallcandido.replit.app" },
+      {
+        rel: "preconnect",
+        href: "https://www.googletagmanager.com",
+      },
+    ],
+    scripts: [
+      {
+        src: `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`,
+        async: true,
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -161,19 +202,11 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="pt-BR">
       <head>
         <HeadContent />
-        {/* Google Analytics */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-6R3CVMLLNV" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-6R3CVMLLNV');`,
-          }}
-        />
-        {/* Structured Data — LocalBusiness */}
+        {/* JSON-LD structured data — suppressHydrationWarning prevents mismatch on inline scripts */}
         <script
           type="application/ld+json"
+          suppressHydrationWarning
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: structuredData }}
         />
       </head>
@@ -187,6 +220,15 @@ gtag('config', 'G-6R3CVMLLNV');`,
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function gtag(...args: unknown[]) {
+      window.dataLayer.push(args);
+    };
+    window.gtag("js", new Date());
+    window.gtag("config", GA_ID);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
