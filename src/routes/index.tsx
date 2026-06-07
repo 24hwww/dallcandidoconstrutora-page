@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight, Star, ExternalLink } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Star, ExternalLink, Play } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Keyboard } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import hero from "@/assets/hero-house.jpg";
 import wGourmet from "@/assets/work-gourmet.jpg";
 import wKitchen from "@/assets/work-kitchen.jpg";
@@ -120,8 +126,8 @@ async function fetchGallery(): Promise<DriveItem[]> {
     });
     if (!res.ok) throw new Error(`Falha ao carregar galeria: ${res.status}`);
     const json = await res.json();
-    console.log("Imagens do Google Drive carregadas com sucesso:", json);
-    return (json.items || []).filter((i: DriveItem) => i.type === "image");
+    console.log("Galeria do Google Drive carregada com sucesso:", json);
+    return (json.items || []).filter((i: DriveItem) => i.type === "image" || i.type === "video");
   } catch (error) {
     console.error("Erro na requisição da galeria do Google Drive:", error);
     throw error;
@@ -150,33 +156,40 @@ function Index() {
   const galleryItems =
     driveImages && driveImages.length > 0
       ? driveImages.map((i) => ({
-          src: `https://lh3.googleusercontent.com/d/${i.id}=w1600`,
-          thumb: `https://lh3.googleusercontent.com/d/${i.id}=w600`,
+          id: i.id,
+          type: i.type,
+          src: i.type === "video" ? i.embed_url : `https://lh3.googleusercontent.com/d/${i.id}=w1600`,
+          thumb: i.type === "video" ? (i.thumbnail_url || `https://lh3.googleusercontent.com/d/${i.id}=w600`) : `https://lh3.googleusercontent.com/d/${i.id}=w600`,
           label: prettyLabel(i.name),
         }))
       : gallery.map((g) => ({
           ...g,
+          type: "image",
           thumb: g.src,
         }));
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [isGridOpen, setIsGridOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
-  const prev = useCallback(
-    () => setLightboxIndex((i) => (i === null ? null : (i - 1 + galleryItems.length) % galleryItems.length)),
-    [galleryItems.length],
-  );
-  const next = useCallback(
-    () => setLightboxIndex((i) => (i === null ? null : (i + 1) % galleryItems.length)),
-    [galleryItems.length],
-  );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (lightboxIndex === null) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeLightbox();
-      else if (e.key === "ArrowLeft") prev();
-      else if (e.key === "ArrowRight") next();
     };
     window.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
@@ -185,16 +198,29 @@ function Index() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [lightboxIndex, closeLightbox, prev, next]);
+  }, [lightboxIndex, closeLightbox]);
+
+  useEffect(() => {
+    if (!isGridOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isGridOpen]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
 
       {/* NAV */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <header className={`fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md border-b border-border transition-all duration-300 ${isScrolled ? "py-2" : "py-4 md:py-5"}`}>
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <a href="#top" className="flex items-center gap-3">
-            <img src="/logo-square.png" alt="Dall' Candido Construtora" className="h-10 w-auto" />
+            <img
+              src="/logo-square.png"
+              alt="Dall' Candido Construtora"
+              className={`w-auto transition-all duration-300 ${isScrolled ? "h-10 md:h-12" : "h-16 md:h-20"}`}
+            />
           </a>
           <nav className="hidden md:flex items-center gap-8 text-sm">
             <a href="#servicos" className="text-muted-foreground hover:text-primary transition">Serviços</a>
@@ -214,7 +240,7 @@ function Index() {
       </header>
 
       {/* HERO */}
-      <section id="top" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+      <section id="top" className="relative min-h-screen flex items-center pt-28 md:pt-36 overflow-hidden">
         <img
           src={hero}
           alt="Casa moderna construída pela Dall' Candido Construtora em Forquilhinha SC"
@@ -335,8 +361,19 @@ function Index() {
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent opacity-90" />
+                
+                {g.type === "video" && (
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="w-14 h-14 rounded-full bg-primary/95 text-primary-foreground flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                      <Play className="w-6 h-6 fill-current translate-x-0.5" />
+                    </div>
+                  </div>
+                )}
+
                 <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <p className="text-xs text-primary font-semibold tracking-widest uppercase mb-1">Projeto</p>
+                  <p className="text-xs text-primary font-semibold tracking-widest uppercase mb-1">
+                    {g.type === "video" ? "Vídeo" : "Projeto"}
+                  </p>
                   <h3 className="text-xl font-semibold">{g.label}</h3>
                 </div>
               </button>
@@ -346,7 +383,7 @@ function Index() {
             <div className="mt-10 flex justify-center">
               <button
                 type="button"
-                onClick={() => setLightboxIndex(0)}
+                onClick={() => setIsGridOpen(true)}
                 className="px-7 py-3.5 rounded-md font-semibold text-primary-foreground transition hover:scale-[1.02]"
                 style={{ background: "var(--gradient-red)", boxShadow: "var(--shadow-red)" }}
               >
@@ -574,7 +611,7 @@ function Index() {
       <footer className="border-t border-border py-10 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <img src="/logo-square.png" alt="Dall' Candido Construtora" className="h-9 w-auto" />
+            <img src="/logo-square.png" alt="Dall' Candido Construtora" className="h-16 md:h-20 w-auto" />
           </div>
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <a href={googleMapsUrl} target="_blank" rel="noreferrer" className="hover:text-primary transition flex items-center gap-1">
@@ -591,45 +628,133 @@ function Index() {
         </div>
       </footer>
 
+      {/* GRID MODAL FOR ALL WORKS */}
+      {isGridOpen && (
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-6xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="p-6 border-b border-border flex items-center justify-between">
+              <div>
+                <h3 className="text-2xl font-bold flex items-center gap-2">
+                  <span>Todas as Obras</span>
+                  <span className="text-sm font-normal py-1 px-2.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
+                    {galleryItems.length} itens
+                  </span>
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Clique em qualquer item para abrir a visualização em tela cheia com slide.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsGridOpen(false)}
+                className="w-10 h-10 rounded-full bg-secondary hover:bg-muted flex items-center justify-center text-foreground transition"
+                aria-label="Fechar galeria"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Grid Content */}
+            <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {galleryItems.map((g, i) => (
+                  <button
+                    type="button"
+                    key={`${g.label}-grid-${i}`}
+                    onClick={() => {
+                      setLightboxIndex(i);
+                    }}
+                    className="group relative overflow-hidden rounded-xl border border-border aspect-[4/3] text-left hover:border-primary/60 transition-all"
+                  >
+                    <img
+                      src={g.thumb || g.src}
+                      alt={g.label}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
+                    
+                    {/* Play indicator for videos */}
+                    {g.type === "video" && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
+                          <Play className="w-4 h-4 fill-current translate-x-0.5" />
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="absolute bottom-0 left-0 right-0 p-3">
+                      <p className="text-[10px] text-primary font-semibold tracking-wider uppercase mb-0.5">
+                        {g.type === "video" ? "Vídeo" : "Projeto"}
+                      </p>
+                      <h4 className="text-sm font-semibold truncate text-white">{g.label}</h4>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* LIGHTBOX */}
       {lightboxIndex !== null && galleryItems[lightboxIndex] && (
         <div
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center"
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 md:p-6"
           onClick={closeLightbox}
         >
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); closeLightbox(); }}
-            className="absolute top-5 right-5 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+            className="absolute top-5 right-5 z-[110] w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
             aria-label="Fechar"
           >
             <X className="w-6 h-6" />
           </button>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); prev(); }}
-            className="absolute left-3 md:left-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
-            aria-label="Anterior"
+          
+          <div
+            className="w-full max-w-5xl h-[85vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
           >
-            <ChevronLeft className="w-7 h-7" />
-          </button>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); next(); }}
-            className="absolute right-3 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
-            aria-label="Próxima"
-          >
-            <ChevronRight className="w-7 h-7" />
-          </button>
-          <div className="max-w-[92vw] max-h-[88vh] flex flex-col items-center gap-4" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={galleryItems[lightboxIndex].src}
-              alt={galleryItems[lightboxIndex].label}
-              className="max-w-[92vw] max-h-[80vh] object-contain rounded-lg shadow-2xl"
-            />
-            <p className="text-white/80 text-sm">
-              {lightboxIndex + 1} / {galleryItems.length} — {galleryItems[lightboxIndex].label}
-            </p>
+            <Swiper
+              key={lightboxIndex}
+              modules={[Navigation, Pagination, Keyboard]}
+              navigation
+              pagination={{ clickable: true }}
+              keyboard={{ enabled: true }}
+              initialSlide={lightboxIndex}
+              className="w-full h-full lightbox-swiper"
+            >
+              {galleryItems.map((item, index) => (
+                <SwiperSlide key={index} className="flex flex-col items-center justify-center p-4">
+                  {item.type === "video" ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+                      <iframe
+                        src={item.src}
+                        className="w-full max-w-4xl aspect-video rounded-lg shadow-2xl border-0"
+                        allow="autoplay; encrypted-media"
+                        allowFullScreen
+                      />
+                      <p className="text-white/80 text-sm">
+                        {index + 1} / {galleryItems.length} — {item.label} (Vídeo)
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+                      <img
+                        src={item.src}
+                        alt={item.label}
+                        className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl"
+                      />
+                      <p className="text-white/80 text-sm">
+                        {index + 1} / {galleryItems.length} — {item.label}
+                      </p>
+                    </div>
+                  )}
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
       )}
