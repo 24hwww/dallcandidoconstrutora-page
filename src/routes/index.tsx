@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState, useCallback } from "react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import logo from "@/assets/logo-dc.png.asset.json";
 import hero from "@/assets/hero-house.jpg";
 import wGourmet from "@/assets/work-gourmet.jpg";
