@@ -63,6 +63,31 @@ const gallery = [
   { src: wCommercial, label: "Obra Comercial" },
 ];
 
+const GALLERY_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbzUt2zsYfy-jYqvzv6RN_pdvYuum4xfgh0v8ISoifa8F5F5DHpnQMYcPr7QEO5ZWghO/exec";
+
+type DriveItem = {
+  id: string;
+  name: string;
+  type: string;
+  thumbnail_url: string;
+  embed_url: string;
+};
+
+async function fetchGallery(): Promise<DriveItem[]> {
+  const res = await fetch(GALLERY_ENDPOINT);
+  if (!res.ok) throw new Error("Falha ao carregar galeria");
+  const json = await res.json();
+  return (json.items || []).filter((i: DriveItem) => i.type === "image");
+}
+
+function prettyLabel(name: string) {
+  const base = name.replace(/\.[^.]+$/, "");
+  if (/whatsapp/i.test(base)) return "Obra Realizada";
+  return base.replace(/[-_]+/g, " ");
+}
+
+
 const whatsappNumber = "554797090562";
 const whatsappMsg = encodeURIComponent("Olá! Gostaria de solicitar um orçamento.");
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`;
