@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import logo from "@/assets/logo-dc.png.asset.json";
 import hero from "@/assets/hero-house.jpg";
 import wGourmet from "@/assets/work-gourmet.jpg";
@@ -62,15 +63,52 @@ const gallery = [
   { src: wCommercial, label: "Obra Comercial" },
 ];
 
+const GALLERY_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbzUt2zsYfy-jYqvzv6RN_pdvYuum4xfgh0v8ISoifa8F5F5DHpnQMYcPr7QEO5ZWghO/exec";
+
+type DriveItem = {
+  id: string;
+  name: string;
+  type: string;
+  thumbnail_url: string;
+  embed_url: string;
+};
+
+async function fetchGallery(): Promise<DriveItem[]> {
+  const res = await fetch(GALLERY_ENDPOINT);
+  if (!res.ok) throw new Error("Falha ao carregar galeria");
+  const json = await res.json();
+  return (json.items || []).filter((i: DriveItem) => i.type === "image");
+}
+
+function prettyLabel(name: string) {
+  const base = name.replace(/\.[^.]+$/, "");
+  if (/whatsapp/i.test(base)) return "Obra Realizada";
+  return base.replace(/[-_]+/g, " ");
+}
+
+
 const whatsappNumber = "554797090562";
 const whatsappMsg = encodeURIComponent("Olá! Gostaria de solicitar um orçamento.");
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`;
 
 function Index() {
+  const { data: driveImages } = useQuery({
+    queryKey: ["gallery"],
+    queryFn: fetchGallery,
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const galleryItems =
+    driveImages && driveImages.length > 0
+      ? driveImages.map((i) => ({ src: i.thumbnail_url.replace(/sz=w\d+/, "sz=w1200"), label: prettyLabel(i.name) }))
+      : gallery;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* NAV */}
-      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-border">
+
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <a href="#top" className="flex items-center gap-3">
             <img src={logo.url} alt="Dall' Candido Construtora" className="h-10 w-auto" />
@@ -197,7 +235,7 @@ function Index() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {gallery.map((g) => (
+            {galleryItems.map((g) => (
               <div key={g.label} className="group relative overflow-hidden rounded-xl border border-border aspect-[4/3]">
                 <img
                   src={g.src}
