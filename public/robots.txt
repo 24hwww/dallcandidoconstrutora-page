@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dallcandido.replit.app/sitemap.xml
+Sitemap: https://dallcandido.com.br/sitemap.xml
